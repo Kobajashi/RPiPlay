@@ -4,6 +4,7 @@
 #include "dnssd.h"
 #include "stream.h"
 #include "raop_ntp.h"
+#include "../renderers/video_renderer.h"
 
 #if defined (WIN32) && defined(DLL_EXPORT)
 # define RAOP_API __declspec(dllexport)
