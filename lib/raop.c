@@ -30,6 +30,7 @@
 #include "compat.h"
 #include "raop_rtp_mirror.h"
 #include "raop_ntp.h"
+#include "../renderers/video_renderer.h"
 
 struct raop_s {
 	/* Callbacks for audio and video */
@@ -63,6 +64,8 @@ struct raop_conn_s {
 
 };
 typedef struct raop_conn_s raop_conn_t;
+
+video_renderer_t *r;
 
 #include "raop_handlers.h"
 
@@ -234,6 +237,7 @@ conn_destroy(void *ptr)
         /* This is done in case TEARDOWN was not called */
         raop_rtp_mirror_destroy(conn->raop_rtp_mirror);
     }
+	video_renderer_flush(r)
 	free(conn->local);
 	free(conn->remote);
 	pairing_session_destroy(conn->pairing);
@@ -242,7 +246,7 @@ conn_destroy(void *ptr)
 }
 
 raop_t *
-raop_init(int max_clients, raop_callbacks_t *callbacks)
+raop_init(int max_clients, raop_callbacks_t *callbacks, video_renderer_t *renderer)
 {
 	raop_t *raop;
 	pairing_t *pairing;
@@ -252,6 +256,8 @@ raop_init(int max_clients, raop_callbacks_t *callbacks)
 	assert(callbacks);
 	assert(max_clients > 0);
 	assert(max_clients < 100);
+
+	r  = renderer
 
 	/* Initialize the network */
 	if (netutils_init() < 0) {

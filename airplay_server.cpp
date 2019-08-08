@@ -204,14 +204,6 @@ int start_server(std::vector<char> hw_addr, std::string name, bool show_backgrou
     raop_cbs.audio_process = audio_process;
     raop_cbs.video_process = video_process;
     raop_cbs.audio_set_volume = audio_set_volume;
-    raop = raop_init(10, &raop_cbs);
-    if (raop == NULL) {
-        LOGE("Error initializing raop!");
-        return -1;
-    }
-
-    raop_set_log_callback(raop, log_callback, NULL);
-    raop_set_log_level(raop, debug_log ? RAOP_LOG_DEBUG : LOGGER_INFO);
 
     logger_t *render_logger = logger_init();
     logger_set_callback(render_logger, log_callback, NULL);
@@ -223,6 +215,15 @@ int start_server(std::vector<char> hw_addr, std::string name, bool show_backgrou
         LOGE("Could not init video renderer");
         return -1;
     }
+
+    raop = raop_init(10, &raop_cbs, video_renderer);
+    if (raop == NULL) {
+        LOGE("Error initializing raop!");
+        return -1;
+    }
+
+    raop_set_log_callback(raop, log_callback, NULL);
+    raop_set_log_level(raop, debug_log ? RAOP_LOG_DEBUG : LOGGER_INFO);
 
     if (audio_device == AUDIO_DEVICE_NONE) {
         LOGI("Audio disabled");
