@@ -257,7 +257,7 @@ raop_init(int max_clients, raop_callbacks_t *callbacks, video_renderer_t *render
 	assert(max_clients > 0);
 	assert(max_clients < 100);
 
-	r  = renderer
+	r  = renderer;
 
 	/* Initialize the network */
 	if (netutils_init() < 0) {
